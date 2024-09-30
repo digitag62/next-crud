@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import {
   Form,
   FormControl,
@@ -8,13 +9,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { z } from "zod";
-import { createTodo } from "@/lib/actions";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { updateTodo } from "@/lib/actions";
 
 const formSchema = z.object({
   todo: z.string().min(2, {
@@ -22,22 +23,27 @@ const formSchema = z.object({
   }),
 });
 
-export const InputField = () => {
+type Todo = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  remarks: string;
+};
+
+export const UpdateTodo = ({ todo, id }: { todo: Todo; id: string }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      todo: "",
+      todo: todo.remarks,
     },
   });
 
-  // 2. Define a submit handler.
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    createTodo(values);
-    form.resetField("todo");
+    updateTodo(values, id);
   };
 
   return (
-    <div className="my-10">
+    <div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -52,14 +58,14 @@ export const InputField = () => {
                 <FormControl>
                   <Input placeholder="do a homework" {...field} />
                 </FormControl>
-                {/* <FormDescription>
-                  This is your public display name.
-                </FormDescription> */}
                 <FormMessage />
               </FormItem>
             )}
           />
           <Button type="submit">Submit</Button>
+          <Link href="/" className={buttonVariants({ variant: "secondary" })}>
+            Cancel
+          </Link>
         </form>
       </Form>
     </div>
