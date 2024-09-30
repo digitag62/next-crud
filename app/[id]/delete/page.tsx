@@ -17,11 +17,16 @@ const DeletePage = async ({ params }: { params: { id: string } }) => {
   const handleDelete = async () => {
     "use server";
 
-    const res = await prismadb.todos.delete({
-      where: {
-        id: params.id,
-      },
-    });
+    try {
+      await prismadb.todos.delete({
+        where: {
+          id: params.id,
+        },
+      });
+    } catch (error) {
+      console.log(`Delete Error:`, error);
+      throw error;
+    }
 
     revalidatePath("/");
     redirect("/");
@@ -31,7 +36,7 @@ const DeletePage = async ({ params }: { params: { id: string } }) => {
     <div className="container m-auto h-screen flex justify-center items-center">
       <div className="border rounded-md px-6 py-6">
         <h2 className="text-2xl font-semibold">Delete Todo?</h2>
-        <p>This action can't be undone.</p>
+        <p>This action can&apos;t be undone.</p>
         <form action={handleDelete}>
           <div className="flex gap-2 justify-end mt-5">
             <Link

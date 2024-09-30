@@ -9,35 +9,34 @@ export type ValuesTodo = {
 };
 
 export async function createTodo(values: ValuesTodo) {
-  const res = await prismadb.todos.create({
-    data: {
-      remarks: values.todo,
-    },
-  });
+  try {
+    await prismadb.todos.create({
+      data: {
+        remarks: values.todo,
+      },
+    });
+  } catch (error) {
+    console.log(`Create Error:`, error);
+    throw error;
+  }
 
   revalidatePath("/");
 }
 
 export async function updateTodo(values: ValuesTodo, id: string) {
-  const res = await prismadb.todos.update({
-    where: {
-      id: id,
-    },
-    data: {
-      remarks: values.todo,
-    },
-  });
-
-  revalidatePath("/");
-  redirect("/");
-}
-
-export async function deleteTodo(id: string) {
-  const res = await prismadb.todos.delete({
-    where: {
-      id: id,
-    },
-  });
+  try {
+    await prismadb.todos.update({
+      where: {
+        id: id,
+      },
+      data: {
+        remarks: values.todo,
+      },
+    });
+  } catch (error) {
+    console.log(`Error Update:`, error);
+    throw error;
+  }
 
   revalidatePath("/");
   redirect("/");

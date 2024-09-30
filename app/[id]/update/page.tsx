@@ -1,7 +1,5 @@
-import { buttonVariants } from "@/components/ui/button";
 import { UpdateTodo } from "@/components/update-field";
 import prismadb from "@/lib/prismadb";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 
